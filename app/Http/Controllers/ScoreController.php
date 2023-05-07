@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Illuminate\Http\Request;
 use App\Models\Scores;
+use Illuminate\Http\Request;
+
 
 class ScoreController extends Controller
 {
@@ -26,7 +26,22 @@ class ScoreController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $request->validate([
+            'name'=> 'required',
+            'scores'=>'required',
+        ]);
+        Scores::create($request->post());
+        return redirect()->route('scores.index')->with('success','Player scores saved successfully');
+    }
+
+    /**
+      * @param  \Illuminate\Http\Request  $request
+    * @param  int  $id
+     */
+   
+    public function showById($id){
+        $scores = Scores::findOrFail($id);
+        return response()->json(["data"=>$scores]);
     }
 
     /**
@@ -35,9 +50,9 @@ class ScoreController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Scores $scores)
     {
-        //
+        return view('scores.show', compact('scores'));
     }
 
     /**
@@ -49,7 +64,11 @@ class ScoreController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $scores = Scores::findOrFail($id);
+        $scores->update($request->only("name", "score"));
+        return response()->json(["data" => [
+            "success" => true
+        ]]);
     }
 
     /**
@@ -60,6 +79,9 @@ class ScoreController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Scores::findOrFail($id)->delete();
+        return response()->json(["data" => [
+            "success" => true
+        ]]);
     }
 }

@@ -64,6 +64,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        'Scores' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Scores::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
