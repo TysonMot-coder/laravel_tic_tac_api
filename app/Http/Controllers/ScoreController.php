@@ -15,7 +15,7 @@ class ScoreController extends Controller
     public function index()
     {
         $scores = Scores::orderBy('id','desc')->paginate(5);
-        return view('scores.index', compact('scores'));
+        return response()-> json($scores);
     }
 
     /**
@@ -31,7 +31,7 @@ class ScoreController extends Controller
             'scores'=>'required',
         ]);
         Scores::create($request->post());
-        return redirect()->route('scores.index')->with('success','Player scores saved successfully');
+        return response()->statusTexts('created') ;
     }
 
     /**
@@ -41,7 +41,12 @@ class ScoreController extends Controller
    
     public function showById($id){
         $scores = Scores::findOrFail($id);
-        return response()->json(["data"=>$scores]);
+        if($scores){
+            return response()->json(["data"=>$scores]);
+        }
+        return response()->json([
+            'message' => 'No such users on our records'
+        ], 404);
     }
 
     /**
@@ -52,7 +57,8 @@ class ScoreController extends Controller
      */
     public function show(Scores $scores)
     {
-        return view('scores.show', compact('scores'));
+       $scores = Scores:: all()->sortBy("name");
+       return response()->json(["data"=>$scores]);
     }
 
     /**
@@ -79,7 +85,7 @@ class ScoreController extends Controller
      */
     public function destroy($id)
     {
-        Scores::findOrFail($id)->delete();
+        Scores::findOrFail($id)->destroy();
         return response()->json(["data" => [
             "success" => true
         ]]);

@@ -9,5 +9,6 @@ class Scores extends Model
 {
     use HasFactory;
     
+    protected $table = 'player_score';
     protected $fillable = ["name", "score"];
 }
